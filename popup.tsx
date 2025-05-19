@@ -193,7 +193,7 @@ function IndexPopup() {
   return (
     <div className={`w-[400px] p-4 ${settings.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white'}`}>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">TabZen</h1>
+        <h1 className="text-xl font-bold">Tabify</h1>
         <button
           onClick={openSettings}
           className="text-blue-500 hover:text-blue-600">

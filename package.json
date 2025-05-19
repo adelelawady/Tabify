@@ -1,30 +1,28 @@
 {
   "name": "tabify",
   "displayName": "Tabify",
-  "version": "0.0.1",
-  "description": "A basic Plasmo extension.",
-  "author": "Adel Ali",
+  "version": "1.0.0",
+  "description": "A powerful Chrome extension for managing tab overload with smart organization features",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
     "package": "plasmo package"
   },
   "dependencies": {
-    "plasmo": "0.90.5",
+    "plasmo": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "4.1.1",
-    "@tailwindcss/forms": "^0.5.10",
-    "@types/chrome": "0.0.258",
-    "@types/node": "20.11.5",
-    "@types/react": "18.2.48",
-    "@types/react-dom": "18.2.18",
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.35",
-    "prettier": "3.2.4",
-    "tailwindcss": "^3.4.1",
+    "@plasmohq/prettier-plugin-sort-imports": "latest",
+    "@types/chrome": "0.0.260",
+    "@types/node": "20.11.24",
+    "@types/react": "18.2.61",
+    "@types/react-dom": "18.2.19",
+    "autoprefixer": "10.4.18",
+    "postcss": "8.4.35",
+    "prettier": "3.2.5",
+    "tailwindcss": "3.4.1",
     "typescript": "5.3.3"
   },
   "manifest": {
@@ -33,8 +31,18 @@
     ],
     "permissions": [
       "tabs",
-      "tabGroups",
-      "storage"
+      "storage",
+      "tabGroups"
     ]
-  }
+  },
+  "keywords": [
+    "chrome-extension",
+    "tab-management",
+    "productivity",
+    "organization",
+    "tabs",
+    "browser-extension"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
 }
