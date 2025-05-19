@@ -1,7 +1,7 @@
 # Tabify 🎯
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/your-extension-id?color=4285f4&label=Chrome%20Web%20Store&logo=google-chrome&logoColor=white)](https://chrome.google.com/webstore/detail/your-extension-id)
-[![License](https://img.shields.io/github/license/yourusername/tabify?color=blue)](LICENSE)
+[![License](https://img.shields.io/github/license/adelelawady/tabify?color=blue)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -36,7 +36,7 @@ A powerful Chrome extension for managing tab overload with smart organization fe
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/tabify.git
+   git clone https://github.com/adelelawady/Tabify.git
    ```
 
 2. Install dependencies:
@@ -91,6 +91,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📧 Contact
 
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
+Adele Lawady - [@adelelawady](https://github.com/adelelawady)
 
-Project Link: [https://github.com/yourusername/tabify](https://github.com/yourusername/tabify)
+Project Link: [https://github.com/adelelawady/Tabify](https://github.com/adelelawady/Tabify)
