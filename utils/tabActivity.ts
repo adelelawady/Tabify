@@ -62,23 +62,40 @@ export const groupInactiveTabs = async (tabs: Tab[], settings: TabZenSettings) =
     })
   )
 
-  const tabsToGroup = inactiveTabs
+  const tabsToProcess = inactiveTabs
     .filter(({ tab, inactivityDuration }) => 
       inactivityDuration >= settings.inactivityThreshold && !tab.pinned
     )
     .map(({ tab }) => tab)
 
-  if (tabsToGroup.length > 0) {
-    // Create a new group
-    const group = await chrome.tabs.group({
-      tabIds: tabsToGroup.map(tab => tab.id)
-    })
+  if (tabsToProcess.length === 0) return
 
-    // Update the group's title and color
-    await chrome.tabGroups.update(group, {
-      title: "Inactive Tabs",
+  // Find existing group with the same name
+  const groups = await chrome.tabGroups.query({})
+  let targetGroup = groups.find(g => g.title === settings.groupName)
+
+  // Create new group if it doesn't exist
+  if (!targetGroup) {
+    const group = await chrome.tabs.group({
+      tabIds: tabsToProcess.map(tab => tab.id)
+    })
+    targetGroup = await chrome.tabGroups.update(group, {
+      title: settings.groupName,
       color: "grey"
     })
+  } else {
+    // Add tabs to existing group
+    await chrome.tabs.group({
+      groupId: targetGroup.id,
+      tabIds: tabsToProcess.map(tab => tab.id)
+    })
+  }
+
+  // Handle pinning based on groupAction setting
+  if (settings.groupAction === 'pin' || settings.groupAction === 'both') {
+    for (const tab of tabsToProcess) {
+      await chrome.tabs.update(tab.id, { pinned: true })
+    }
   }
 }
 

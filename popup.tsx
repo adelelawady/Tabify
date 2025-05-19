@@ -185,6 +185,11 @@ function IndexPopup() {
     }
   }
 
+  const handleGroupInactive = async () => {
+    await groupInactiveTabs(tabs, settings)
+    loadTabs()
+  }
+
   return (
     <div className={`w-[400px] p-4 ${settings.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white'}`}>
       <div className="flex justify-between items-center mb-4">
@@ -229,9 +234,11 @@ function IndexPopup() {
             Pin All
           </button>
           <button
-            onClick={handleUnpinAll}
-            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
-            Unpin All
+            onClick={handleGroupInactive}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            title={`Group action: ${settings.groupAction}`}>
+            {settings.groupAction === 'pin' ? 'Pin & Group' : 
+             settings.groupAction === 'both' ? 'Pin & Group' : 'Group Only'}
           </button>
           <button
             onClick={handleCloseInactive}

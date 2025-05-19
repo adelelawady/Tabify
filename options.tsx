@@ -41,7 +41,7 @@ function OptionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className={`min-h-screen p-8 ${settings.theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white'}`}>
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">TabZen Settings</h1>
         
@@ -188,6 +188,49 @@ function OptionsPage() {
                 <span>Show inactivity time for each tab</span>
               </label>
             </div>
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold">Group Settings</h2>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Group Name
+              </label>
+              <input
+                type="text"
+                value={settings.groupName}
+                onChange={(e) => setSettings({ ...settings, groupName: e.target.value })}
+                className={`w-full p-2 rounded border ${
+                  settings.theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white'
+                }`}
+                placeholder="Enter group name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Group Action
+              </label>
+              <select
+                value={settings.groupAction}
+                onChange={(e) => setSettings({ ...settings, groupAction: e.target.value as 'pin' | 'group' | 'both' })}
+                className={`w-full p-2 rounded border ${
+                  settings.theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white'
+                }`}>
+                <option value="pin">Pin tabs only</option>
+                <option value="group">Group tabs only</option>
+                <option value="both">Pin and group tabs</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              onClick={() => saveSettings(settings)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+              Save Settings
+            </button>
           </div>
         </div>
       </div>

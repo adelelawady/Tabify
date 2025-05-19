@@ -6,6 +6,8 @@ export interface TabZenSettings {
   autoPinEnabled: boolean
   showStats: boolean
   showInactivityTime: boolean
+  groupName: string
+  groupAction: 'pin' | 'group' | 'both'
 }
 
 export const DEFAULT_SETTINGS: TabZenSettings = {
@@ -15,5 +17,7 @@ export const DEFAULT_SETTINGS: TabZenSettings = {
   theme: 'light',
   autoPinEnabled: true,
   showStats: true,
-  showInactivityTime: true
+  showInactivityTime: true,
+  groupName: "Inactive Tabs",
+  groupAction: 'both'
 } 
