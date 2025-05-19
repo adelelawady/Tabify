@@ -157,6 +157,38 @@ function OptionsPage() {
               </button>
             </div>
           </div>
+
+          {/* Display Settings */}
+          <div className="bg-white p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4">Display Settings</h2>
+            <div className="space-y-4">
+              <label className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={settings.showStats}
+                  onChange={(e) => saveSettings({
+                    ...settings,
+                    showStats: e.target.checked
+                  })}
+                  className="form-checkbox h-5 w-5"
+                />
+                <span>Show tab statistics</span>
+              </label>
+              
+              <label className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={settings.showInactivityTime}
+                  onChange={(e) => saveSettings({
+                    ...settings,
+                    showInactivityTime: e.target.checked
+                  })}
+                  className="form-checkbox h-5 w-5"
+                />
+                <span>Show inactivity time for each tab</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>

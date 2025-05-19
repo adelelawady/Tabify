@@ -5,6 +5,7 @@ export interface TabZenSettings {
   theme: 'light' | 'dark'
   autoPinEnabled: boolean
   showStats: boolean
+  showInactivityTime: boolean
 }
 
 export const DEFAULT_SETTINGS: TabZenSettings = {
@@ -13,5 +14,6 @@ export const DEFAULT_SETTINGS: TabZenSettings = {
   excludedDomains: [],
   theme: 'light',
   autoPinEnabled: true,
-  showStats: true
+  showStats: true,
+  showInactivityTime: true
 } 

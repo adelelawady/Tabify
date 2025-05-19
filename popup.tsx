@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import type { Tab } from "~types/tab"
 import type { TabZenSettings } from "~types/settings"
 import { DEFAULT_SETTINGS } from "~types/settings"
-import { getTabStats, getTabInactivityDuration } from "~utils/tabActivity"
+import { getTabStats, getTabInactivityDuration, groupInactiveTabs, closeInactiveTabs, updateTabActivity } from "~utils/tabActivity"
 import "~style.css"
 
 function IndexPopup() {
@@ -11,11 +11,26 @@ function IndexPopup() {
   const [settings, setSettings] = useState<TabZenSettings>(DEFAULT_SETTINGS)
   const [stats, setStats] = useState({ total: 0, inactive: 0 })
   const [isLoading, setIsLoading] = useState(true)
+  const [inactivityTimes, setInactivityTimes] = useState<Record<number, number>>({})
 
   useEffect(() => {
     loadTabs()
     loadSettings()
   }, [])
+
+  useEffect(() => {
+    const updateTimes = async () => {
+      const times: Record<number, number> = {}
+      for (const tab of tabs) {
+        times[tab.id] = await getTabInactivityDuration(tab.id)
+      }
+      setInactivityTimes(times)
+    }
+
+    updateTimes()
+    const interval = setInterval(updateTimes, 10000)
+    return () => clearInterval(interval)
+  }, [tabs])
 
   const loadSettings = async () => {
     const result = await chrome.storage.sync.get("tabZenSettings")
@@ -36,7 +51,8 @@ function IndexPopup() {
         groupId: tab.groupId
       }))
       setTabs(formattedTabs)
-      setStats(getTabStats(formattedTabs))
+      const newStats = await getTabStats(formattedTabs)
+      setStats(newStats)
     } catch (error) {
       console.error("Error loading tabs:", error)
     }
@@ -48,16 +64,38 @@ function IndexPopup() {
   )
 
   const handlePinAllInactive = async () => {
-    const inactiveTabs = tabs.filter(tab => {
-      const inactivityDuration = getTabInactivityDuration(tab.id)
-      return inactivityDuration >= settings.inactivityThreshold
-    })
+    const inactiveTabs = await Promise.all(
+      tabs.map(async tab => {
+        const inactivityDuration = await getTabInactivityDuration(tab.id)
+        return {
+          tab,
+          inactivityDuration
+        }
+      })
+    )
 
-    for (const tab of inactiveTabs) {
+    const tabsToPin = inactiveTabs
+      .filter(({ inactivityDuration }) => inactivityDuration >= settings.inactivityThreshold)
+      .map(({ tab }) => tab)
+
+    for (const tab of tabsToPin) {
       if (!tab.pinned) {
         await chrome.tabs.update(tab.id, { pinned: true })
       }
     }
+    loadTabs()
+  }
+
+  const handleUnpinAll = async () => {
+    const pinnedTabs = tabs.filter(tab => tab.pinned)
+    for (const tab of pinnedTabs) {
+      await chrome.tabs.update(tab.id, { pinned: false })
+    }
+    loadTabs()
+  }
+
+  const handleCloseInactive = async () => {
+    await closeInactiveTabs(tabs, settings)
     loadTabs()
   }
 
@@ -81,8 +119,70 @@ function IndexPopup() {
     }
   }
 
+  const handleOpenTab = async (tabId: number) => {
+    try {
+      await chrome.tabs.update(tabId, { active: true })
+      // Update the activity when opening the tab
+      await updateTabActivity(tabId)
+    } catch (error) {
+      console.error("Error opening tab:", error)
+    }
+  }
+
   const openSettings = () => {
     chrome.runtime.openOptionsPage()
+  }
+
+  const formatInactivityTime = (minutes: number): string => {
+    if (minutes < 1) return 'Just now'
+    if (minutes < 60) return `${Math.round(minutes)}m ago`
+    const hours = Math.floor(minutes / 60)
+    const remainingMinutes = Math.round(minutes % 60)
+    return `${hours}h ${remainingMinutes}m ago`
+  }
+
+  const handleExcludeDomain = async (url: string) => {
+    try {
+      const domain = new URL(url).hostname
+      const result = await chrome.storage.sync.get("tabZenSettings")
+      const currentSettings = result.tabZenSettings || DEFAULT_SETTINGS
+      
+      if (!currentSettings.excludedDomains.includes(domain)) {
+        const updatedSettings = {
+          ...currentSettings,
+          excludedDomains: [...currentSettings.excludedDomains, domain]
+        }
+        await chrome.storage.sync.set({ tabZenSettings: updatedSettings })
+        setSettings(updatedSettings)
+      }
+    } catch (error) {
+      console.error("Error excluding domain:", error)
+    }
+  }
+
+  const handleRemoveExcludedDomain = async (domain: string) => {
+    try {
+      const result = await chrome.storage.sync.get("tabZenSettings")
+      const currentSettings = result.tabZenSettings || DEFAULT_SETTINGS
+      
+      const updatedSettings = {
+        ...currentSettings,
+        excludedDomains: currentSettings.excludedDomains.filter(d => d !== domain)
+      }
+      await chrome.storage.sync.set({ tabZenSettings: updatedSettings })
+      setSettings(updatedSettings)
+    } catch (error) {
+      console.error("Error removing excluded domain:", error)
+    }
+  }
+
+  const isDomainExcluded = (url: string): boolean => {
+    try {
+      const domain = new URL(url).hostname
+      return settings.excludedDomains.includes(domain)
+    } catch {
+      return false
+    }
   }
 
   return (
@@ -103,7 +203,7 @@ function IndexPopup() {
             <div className="text-2xl font-bold">{stats.total}</div>
           </div>
           <div className={`p-3 rounded-lg ${settings.theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'}`}>
-            <div className="text-sm text-gray-500">Inactive Tabs</div>
+            <div className="text-sm text-gray-500">Pinned Tabs</div>
             <div className="text-2xl font-bold">{stats.inactive}</div>
           </div>
         </div>
@@ -122,11 +222,21 @@ function IndexPopup() {
           />
         </div>
 
-        <div className="flex space-x-2">
+        <div className="grid grid-cols-3 gap-2">
           <button
             onClick={handlePinAllInactive}
-            className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-            Pin All Inactive
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Pin All
+          </button>
+          <button
+            onClick={handleUnpinAll}
+            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+            Unpin All
+          </button>
+          <button
+            onClick={handleCloseInactive}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+            Close
           </button>
         </div>
 
@@ -140,16 +250,40 @@ function IndexPopup() {
                 className={`flex items-center justify-between p-2 rounded ${
                   settings.theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-50 hover:bg-gray-100'
                 }`}>
-                <div className="flex items-center space-x-2 min-w-0">
+                <div className="flex items-center space-x-2 min-w-0 flex-1">
                   {tab.pinned && <span>📌</span>}
-                  <span className="truncate">{tab.title}</span>
+                  <div 
+                    className="flex flex-col min-w-0 cursor-pointer hover:underline"
+                    onClick={() => handleOpenTab(tab.id)}>
+                    <span className="truncate">{tab.title}</span>
+                    {settings.showInactivityTime && (
+                      <span className={`text-xs ${settings.theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {formatInactivityTime(inactivityTimes[tab.id] || 0)}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 ml-2">
                   <button
                     onClick={() => handlePinTab(tab.id, !tab.pinned)}
                     className="text-gray-500 hover:text-gray-700">
                     {tab.pinned ? "Unpin" : "Pin"}
                   </button>
+                  {isDomainExcluded(tab.url) ? (
+                    <button
+                      onClick={() => handleRemoveExcludedDomain(new URL(tab.url).hostname)}
+                      className="text-purple-500 hover:text-purple-700"
+                      title="Remove from excluded domains">
+                      🚫
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleExcludeDomain(tab.url)}
+                      className="text-purple-500 hover:text-purple-700"
+                      title="Exclude domain from auto-pinning">
+                      ⭐
+                    </button>
+                  )}
                   <button
                     onClick={() => handleCloseTab(tab.id)}
                     className="text-red-500 hover:text-red-700">
