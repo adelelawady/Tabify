@@ -1,4 +1,15 @@
-# Tabify 🎯
+# Tabify 
+
+<p align="center">
+  <img 
+    src="https://github.com/user-attachments/assets/3b37dd6b-b66c-4f1a-966d-f736fb99e63d" 
+    alt="ChatGPT Screenshot" 
+    width="200"
+  />
+</p>
+
+
+
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/lhjkicgccjndmgfjcnfheflfhnfihamf?color=4285f4&label=Chrome%20Web%20Store&logo=google-chrome&logoColor=white)](https://chrome.google.com/webstore/detail/lhjkicgccjndmgfjcnfheflfhnfihamf)
 [![License](https://img.shields.io/github/license/adelelawady/tabify?color=blue)](LICENSE)
