@@ -1,6 +1,6 @@
 # Tabify 🎯
 
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/your-extension-id?color=4285f4&label=Chrome%20Web%20Store&logo=google-chrome&logoColor=white)](https://chrome.google.com/webstore/detail/your-extension-id)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/lhjkicgccjndmgfjcnfheflfhnfihamf?color=4285f4&label=Chrome%20Web%20Store&logo=google-chrome&logoColor=white)](https://chrome.google.com/webstore/detail/lhjkicgccjndmgfjcnfheflfhnfihamf)
 [![License](https://img.shields.io/github/license/adelelawady/tabify?color=blue)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
