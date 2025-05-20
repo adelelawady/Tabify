@@ -11,6 +11,8 @@
 
 
 
+
+
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/lhjkicgccjndmgfjcnfheflfhnfihamf?color=4285f4&label=Chrome%20Web%20Store&logo=google-chrome&logoColor=white)](https://chrome.google.com/webstore/detail/lhjkicgccjndmgfjcnfheflfhnfihamf)
 [![License](https://img.shields.io/github/license/adelelawady/tabify?color=blue)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -18,6 +20,32 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 A powerful Chrome extension for managing tab overload with smart organization features.
+
+
+
+
+
+
+
+
+<div align="center">
+  <img 
+    src="https://github.com/user-attachments/assets/a0bf5be2-abbc-4813-ab11-1bc248d8179f" 
+    alt="Screenshot 2025-05-20 23:49:42" 
+    width="400"
+    style="margin-right: 10px;"
+  />
+  <img 
+    src="https://github.com/user-attachments/assets/3685431b-abd6-4a4c-bfc2-2f782207fda0" 
+    alt="Screenshot 2025-05-20 23:49:12" 
+    width="400"
+  />
+</div>
+
+
+
+
+
 
 ## ✨ Features
 
